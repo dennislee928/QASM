@@ -89,8 +89,8 @@ x speed[1];       // Further speed reduction
 
 // Check flying_goblins before it is too late
 measure flying_goblins -> flying_goblins_status;
-if(flying_goblins_status==2) goto alarm;  // The plane met Frieza
-else if(flying_goblins_status==2) goto Old-high; // The plane met ET, Tell 老高
+if(flying_goblins_status==2) goto alarm;    // The plane met Frieza
+if(flying_goblins_status==3) goto oldhigh;  // The plane met ET, Tell 老高
 
 // Touchdown
 x plane[2];       // 011 = landing roll
@@ -119,12 +119,16 @@ barrier delay;    // Force delay
 goto end;
 
 alarm:
+x q[0];          // Set alarm state
+goto end;
 
+oldhigh:         // Changed from Old-high to oldhigh
+h q[0];          // Set oldhigh state
 goto end;
 
 safe:
-h q;
+h q[0];          // Set safe state
 goto end;
 
 end:
-measure q -> c;
+measure q[0] -> c[0];  // Final measurement
