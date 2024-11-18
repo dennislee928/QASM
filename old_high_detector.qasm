@@ -132,6 +132,17 @@ barrier delay;    // Force delay
 measure heading -> hdg_status;
 measure altitude -> alt_status;
 measure speed -> spd_status;
+goto gate;        // Return to landing sequence
+
+gate:
+// Return to taxiing with final speed reduction
+x plane[1];       // 001 = taxiing
+x speed[0];       // Minimum speed
+// Park at gate
+x plane[0];       // 000 = parked
+measure plane -> status;
+measure altitude -> alt_status;
+measure speed -> spd_status;
 goto end;
 
 alarm:
