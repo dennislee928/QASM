@@ -12,7 +12,7 @@ creg measurement_sperm_status[2];
 reset milk_owner_ship;
 reset milk_geo_location;
 reset sperm_status;
-// Simulate milk milk_owner_ship uncertainty
+// Simulate milk milk_owner_ship uncertaintyXmilk_geo_location&&sperm_status
 h milk_owner_ship[0];
 cx milk_geo_location[0],sperm_status[0];
 cx milk_geo_location[1],sperm_status[1];
