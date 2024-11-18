@@ -2,41 +2,105 @@ OPENQASM 2.0;
 include "qelib1.inc";
 
 // Define quantum and classical registers
-qreg plane[3];    // 3 qubits to represent flight states
-creg status[3];   // Classical bits to store measurement
+qreg plane[3];      // Flight state (parked, taxiing, etc.)
+qreg altitude[3];   // 8 altitude levels (000 = ground, 111 = max altitude)
+qreg speed[3];      // 8 speed levels
+qreg heading[4];    // 16 possible heading directions
+qreg weather[2];    // Weather conditions (00=clear, 01=rain, 10=storm, 11=severe)
+qreg delay[2];      // For timing simulation
+creg status[3];     // Classical bits for flight state measurement
+creg alt_status[3]; // Altitude measurement
+creg spd_status[3]; // Speed measurement
+creg hdg_status[4]; // Heading measurement
+creg wx_status[2];  // Weather status
 
-// Initialize plane in ground state (000 = parked)
-reset plane[0];
-reset plane[1];
-reset plane[2];
+// Initialize all registers to ground state
+reset plane;
+reset altitude;
+reset speed;
+reset heading;
+reset weather;
+reset delay;
 
-// Takeoff sequence
-// Transition from parked to taxiing
+// Simulate weather uncertainty using superposition
+// Create superposition for weather conditions
+h weather[0];
+h weather[1];
+
+// Initialize takeoff sequence
+// Parked -> Taxiing
 x plane[0];       // 001 = taxiing
 
-// Transition to takeoff roll
+// Simulate delay using quantum operations
+h delay;
+barrier delay;    // Force delay in execution
+
+// Check weather conditions before takeoff
+measure weather -> wx_status;
+if(wx_status==2) goto end;  // Abort if stormy
+
+// Takeoff roll with speed increase
 x plane[1];       // 011 = takeoff roll
+x speed[0];       // Begin speed increase
+x speed[1];       // Continue acceleration
 
-// Transition to airborne
+// Create superposition for altitude gain uncertainty
+h altitude[0];
+h altitude[1];
+
+// Transition to airborne with altitude gain
 x plane[2];       // 111 = airborne
-x plane[0];       // Reset first bit
-x plane[1];       // Reset second bit
-                  // 100 = cruising altitude
+x altitude[0];    // Begin altitude increase
+x altitude[1];    // Continue climb
 
-// Begin landing sequence
+// Cruising altitude and speed
+x plane[0];       // Reset first bit
+x plane[1];       // 100 = cruising
+x altitude[2];    // Maximum altitude
+x speed[2];       // Cruising speed
+
+// Apply heading changes using superposition
+h heading[0];     // Create uncertainty in heading
+h heading[1];     // Multiple possible flight paths
+
+// Begin descent - gradual altitude and speed reduction
 x plane[1];       // 110 = descent
+x altitude[2];    // Reduce altitude
+x speed[2];       // Reduce speed
+
+// Weather check for landing
+measure weather -> wx_status;
+if(wx_status==3) goto holding_pattern;  // Severe weather diversion
 
 // Final approach
 x plane[0];       // 111 = final approach
+x altitude[1];    // Continue altitude reduction
+x speed[1];       // Further speed reduction
 
 // Touchdown
 x plane[2];       // 011 = landing roll
+x altitude[0];    // Ground level
+x speed[0];       // Landing speed
 
-// Return to taxiing
+// Return to taxiing with final speed reduction
 x plane[1];       // 001 = taxiing
+x speed[0];       // Minimum speed
 
 // Park at gate
 x plane[0];       // 000 = parked
 
-// Measure final state
+// Measure final states
 measure plane -> status;
+measure altitude -> alt_status;
+measure speed -> spd_status;
+measure heading -> hdg_status;
+
+// Holding pattern sequence (jumped to if weather is severe)
+holding_pattern:
+h heading;        // Uncertain heading during holding
+x altitude[1];    // Maintain safe altitude
+x speed[1];       // Holding pattern speed
+barrier delay;    // Force delay
+goto end;
+
+end:
