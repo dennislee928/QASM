@@ -6,12 +6,14 @@ include "qelib1.inc";
 qreg plane[3];      // Flight state (parked, taxiing, etc.)
 //飛行的狀態：停在停機坪、滑行、飛行...其他
 qreg altitude[3];   // 8 altitude levels (000 = ground, 111 = max altitude)
+//高度狀態，共8個，0為在地上，8在最高可承受高度
 qreg speed[3];      // 8 speed levels
 qreg heading[4];    // 16 possible heading directions
 qreg weather[2];    // Weather conditions (00=clear, 01=rain, 10=storm, 11=severe)
 qreg delay[2];      // For timing simulation
 qreg flying_goblins[2];      // For timing simulation(00=not measurements, 01=meet but only seen, 10=contacted and good goblins, 11=contacted and bad goblins)
-qreg goblin_safety[1]; 
+//遇到飛行妖精的情況
+qreg goblin_safety[1];  //遇到佛力札的處理方式
 //Define classical registers
 creg status[3];     // Classical bits for flight state measurement
 creg alt_status[3]; // Altitude measurement
@@ -19,6 +21,7 @@ creg spd_status[3]; // Speed measurement
 creg hdg_status[4]; // Heading measurement
 creg wx_status[2];  // Weather status
 creg flying_goblins_status[2];  // flying_goblins status
+//遇到佛力札的狀況
 creg c_goblin_safety[1]; 
 
 // Initialize all registers to ground state
