@@ -12,7 +12,7 @@ qreg heading[4];    // 16 possible heading directions
 qreg weather[2];    // Weather conditions (00=clear, 01=rain, 10=storm, 11=severe)
 qreg delay[2];      // For timing simulation
 qreg flying_goblins[2];      // For timing simulation(00=not measurements, 01=meet but only seen, 10=contacted and good goblins, 11=contacted and bad goblins)
-//遇到飛行妖精的情況
+//遇到飛行妖精的情況：0-沒遇到,1-遇到但只有看到,2-有接觸，為田中太郎（好的外星人『大概』）,3-有接觸，為佛力札（超壞外星人）
 qreg goblin_safety[1];  //遇到佛力札的處理方式
 //Define classical registers
 creg status[3];     // Classical bits for flight state measurement
@@ -36,6 +36,7 @@ reset goblin_safety;
 
 // Simulate flying_goblins uncertainty using superposition
 // Create superposition for flying_goblins
+//起飛前先確定全球飛行妖精狀況
 h flying_goblins[0];
 h flying_goblins[1];
 
@@ -95,11 +96,14 @@ x altitude[1];    // Continue altitude reduction
 x speed[1];       // Further speed reduction
 
 // Check flying_goblins before it is too late
+//飛機落地前先確定有沒有碰到佛力札
 measure flying_goblins -> flying_goblins_status;
 if(flying_goblins_status==2) goto alarm;    // The plane met Frieza
+//碰到佛力札，要找悟空
 if(flying_goblins_status==3) goto oldhigh;  // The plane met ET, Tell 老高
+//碰到田中太郎，要跟老高說
 if(flying_goblins_status==1) goto oldhigh;  // The plane saw ET, Tell 老高
-
+//看到田中太郎，要跟老高說
 
 // Touchdown
 x plane[2];       // 011 = landing roll
