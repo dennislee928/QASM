@@ -8,11 +8,13 @@ qreg speed[3];      // 8 speed levels
 qreg heading[4];    // 16 possible heading directions
 qreg weather[2];    // Weather conditions (00=clear, 01=rain, 10=storm, 11=severe)
 qreg delay[2];      // For timing simulation
+qreg flying_goblins[2];      // For timing simulation(00=not measurements, 01=meet but only seen, 10=contacted and good goblins, 11=contacted and bad goblins)
 creg status[3];     // Classical bits for flight state measurement
 creg alt_status[3]; // Altitude measurement
 creg spd_status[3]; // Speed measurement
 creg hdg_status[4]; // Heading measurement
 creg wx_status[2];  // Weather status
+creg flying_goblins_status[2];  // flying_goblins status
 
 // Initialize all registers to ground state
 reset plane;
@@ -21,6 +23,12 @@ reset speed;
 reset heading;
 reset weather;
 reset delay;
+reset flying_goblins;
+
+// Simulate flying_goblins uncertainty using superposition
+// Create superposition for flying_goblins
+h flying_goblins[0];
+h flying_goblins[1];
 
 // Simulate weather uncertainty using superposition
 // Create superposition for weather conditions
@@ -59,6 +67,8 @@ x plane[1];       // 100 = cruising
 x altitude[2];    // Maximum altitude
 x speed[2];       // Cruising speed
 
+
+
 // Apply heading changes using superposition
 h heading[0];     // Create uncertainty in heading
 h heading[1];     // Multiple possible flight paths
@@ -76,6 +86,11 @@ if(wx_status==3) goto holding_pattern;  // Severe weather diversion
 x plane[0];       // 111 = final approach
 x altitude[1];    // Continue altitude reduction
 x speed[1];       // Further speed reduction
+
+// Check flying_goblins before it is too late
+measure flying_goblins -> flying_goblins_status;
+if(flying_goblins_status==2) goto alarm;  // The plane met Frieza
+else if(flying_goblins_status==2) goto Old-high; // The plane met ET, Tell 老高
 
 // Touchdown
 x plane[2];       // 011 = landing roll
@@ -103,4 +118,13 @@ x speed[1];       // Holding pattern speed
 barrier delay;    // Force delay
 goto end;
 
+alarm:
+
+goto end;
+
+safe:
+h q;
+goto end;
+
 end:
+measure q -> c;
