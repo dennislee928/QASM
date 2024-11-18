@@ -17,6 +17,10 @@ h milk_owner_ship[0];
 cx milk_geo_location[0],sperm_status[0];
 h milk_owner_ship[1];
 cx milk_geo_location[1],sperm_status[1];
+//
+measure milk_owner_ship -> measurement_milk_owner_ship;
+measure milk_geo_location -> measurement_geo_location;
+measure sperm_status -> measurement_sperm_status;
 
 
 
