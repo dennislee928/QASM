@@ -9,12 +9,15 @@ qreg heading[4];    // 16 possible heading directions
 qreg weather[2];    // Weather conditions (00=clear, 01=rain, 10=storm, 11=severe)
 qreg delay[2];      // For timing simulation
 qreg flying_goblins[2];      // For timing simulation(00=not measurements, 01=meet but only seen, 10=contacted and good goblins, 11=contacted and bad goblins)
+qreg goblin_safety[1]; 
+//Define classical registers
 creg status[3];     // Classical bits for flight state measurement
 creg alt_status[3]; // Altitude measurement
 creg spd_status[3]; // Speed measurement
 creg hdg_status[4]; // Heading measurement
 creg wx_status[2];  // Weather status
 creg flying_goblins_status[2];  // flying_goblins status
+creg c_goblin_safety[1]; 
 
 // Initialize all registers to ground state
 reset plane;
@@ -24,6 +27,7 @@ reset heading;
 reset weather;
 reset delay;
 reset flying_goblins;
+reset goblin_safety;
 
 // Simulate flying_goblins uncertainty using superposition
 // Create superposition for flying_goblins
@@ -67,8 +71,6 @@ x plane[1];       // 100 = cruising
 x altitude[2];    // Maximum altitude
 x speed[2];       // Cruising speed
 
-
-
 // Apply heading changes using superposition
 h heading[0];     // Create uncertainty in heading
 h heading[1];     // Multiple possible flight paths
@@ -91,6 +93,8 @@ x speed[1];       // Further speed reduction
 measure flying_goblins -> flying_goblins_status;
 if(flying_goblins_status==2) goto alarm;    // The plane met Frieza
 if(flying_goblins_status==3) goto oldhigh;  // The plane met ET, Tell 老高
+if(flying_goblins_status==1) goto oldhigh;  // The plane saw ET, Tell 老高
+
 
 // Touchdown
 x plane[2];       // 011 = landing roll
@@ -110,25 +114,28 @@ measure altitude -> alt_status;
 measure speed -> spd_status;
 measure heading -> hdg_status;
 
-// Holding pattern sequence (jumped to if weather is severe)
+// Holding pattern sequence (jumped to if weather/flying_goblins is severe)
 holding_pattern:
 h heading;        // Uncertain heading during holding
 x altitude[1];    // Maintain safe altitude
 x speed[1];       // Holding pattern speed
 barrier delay;    // Force delay
+measure heading -> hdg_status;
+measure altitude -> alt_status;
+measure speed -> spd_status;
 goto end;
 
 alarm:
-x q[0];          // Set alarm state
+x goblin_safety[0];          // Set alarm state
+measure goblin_safety[0] -> c_goblin_safety[0];
 goto end;
 
-oldhigh:         // Changed from Old-high to oldhigh
-h q[0];          // Set oldhigh state
-goto end;
-
-safe:
-h q[0];          // Set safe state
+oldhigh:         // tell old high
+h goblin_safety[0];          // Set oldhigh state
+measure goblin_safety[0] -> c_goblin_safety[0];
 goto end;
 
 end:
-measure q[0] -> c[0];  // Final measurement
+measure weather -> wx_status;
+measure delay -> wx_status;
+measure flying_goblins -> flying_goblins_status;
