@@ -2,7 +2,9 @@ OPENQASM 2.0;
 include "qelib1.inc";
 
 // Define quantum and classical registers
+// 定義所有qu和傳統的暫存器
 qreg plane[3];      // Flight state (parked, taxiing, etc.)
+//飛行的狀態：停在停機坪、滑行、飛行...其他
 qreg altitude[3];   // 8 altitude levels (000 = ground, 111 = max altitude)
 qreg speed[3];      // 8 speed levels
 qreg heading[4];    // 16 possible heading directions
