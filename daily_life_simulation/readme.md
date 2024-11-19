@@ -1,4 +1,4 @@
-量子交通系統說明文件
+量子日常生活模擬說明文件
 Register Declarations 暫存器宣告
 qreg geo[2]; // Geographic location status
 qreg emotion[6]; // Emotion levels
@@ -7,10 +7,6 @@ qreg heading[4]; // Direction heading
 qreg weather[2]; // Weather conditions
 qreg transportation[6]; // Transportation chaos levels
 
-Copy
-
-Insert at cursor
-qasm
 English
 geo[2]: Represents 4 possible locations (00=home, 01=on transportation, 10=office, 11=elsewhere)
 
@@ -45,10 +41,6 @@ reset heading;
 reset weather;
 reset transportation;
 
-Copy
-
-Insert at cursor
-qasm
 English
 All quantum registers are reset to ground state (|0⟩)
 
@@ -71,10 +63,6 @@ cx speed[0], heading[0];
 cx heading[0], weather[0];
 cx weather[0], transportation[0];
 
-Copy
-
-Insert at cursor
-qasm
 English
 Creates quantum correlations between different registers
 
@@ -97,10 +85,6 @@ h heading[0];
 h weather[0];
 h transportation[0];
 
-Copy
-
-Insert at cursor
-qasm
 English
 Uses Hadamard (h) gates to create quantum superposition
 
@@ -123,10 +107,6 @@ barrier heading;
 barrier weather;
 barrier transportation;
 
-Copy
-
-Insert at cursor
-qasm
 English
 Ensures all operations complete before measurements
 
