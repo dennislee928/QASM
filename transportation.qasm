@@ -35,9 +35,6 @@ h heading[0];
 h weather[0];
 h transportation[0];
 
-// Simulate weather uncertainty
-h weather[0];
-h weather[1];
 
 
 // Initialize getting up from bed process
