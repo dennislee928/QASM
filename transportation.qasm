@@ -1,36 +1,51 @@
 OPENQASM 2.0;
 include "qelib1.inc";
 
-// Define quantum and classical registers
+// Define quantum  registers
 qreg geo[2];        // person geo status:(00 = home,01 = on transportation,10=at office,11=else_where)
 qreg emotion[6];     // emotions levels (000000 = extremelly sad, 111111 = extremelly happy)
 qreg speed[3];        // Speed levels
 qreg heading[4];      // Heading to where(3*4=12, so 2 square 4=16 to contain all directions)
 qreg weather[2];      // Weather conditions: 00=clear, 01=rain, 10=storm, 11=severe
+qreg transportation[6];  //transportation chaotic levels (000000 = extremelly smooth, 111111 = extremelly chaotic)
+      
 
-
-creg geo_status[2];       // Classical register for person geo status
+  // Define Classical register
+creg geo_status[2];     // person geo status
 creg emt_status[6];   // Altitude measurement
 creg spd_status[3];   // Speed measurement
 creg hd_status[4];    // Heading status
 creg wt_status[2];  // Weather status
+creg tpt_status[6];  // Weather status
 
 
-// Initialize all registers
-reset plane;
-reset altitude;
+// Initialize all quantum registers
+reset geo;
+reset emotion;
 reset speed;
 reset heading;
 reset weather;
-reset flying_goblins;
+reset transportation;
+
+// Simulate transportation uncertainty
+h transportation[0];
+h transportation[1];
+h transportation[2];
+h transportation[3];
+h transportation[4];
+h transportation[5];
 
 // Simulate weather uncertainty
 h weather[0];
 h weather[1];
 
-// Simulate flying goblins uncertainty
-h flying_goblins[0];
-h flying_goblins[1];
+// Simulate emotion uncertainty
+h emotion[0];
+h emotion[1];
+h emotion[2];
+h emotion[3];
+h emotion[4];
+h emotion[5];
 
 // Initialize takeoff sequence
 // Parked -> Taxiing
