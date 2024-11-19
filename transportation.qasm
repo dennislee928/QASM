@@ -16,7 +16,7 @@ creg emt_status[6];   // Altitude measurement
 creg spd_status[3];   // Speed measurement
 creg hd_status[4];    // Heading status
 creg wt_status[2];  // Weather status
-creg tpt_status[6];  // Weather status
+creg tpt_status[6];  // Transportation status
 
 
 // Initialize all quantum registers
@@ -121,7 +121,8 @@ barrier transportation;
 
 //measure final status for everything
 measure geo -> geo_status;
-measure emotiona -> emt_status;
+measure emotiona -> emt_status;  // fixed typo
+
 measure speed -> spd_status;
 measure heading -> hd_status;
 measure weather -> wt_status;
