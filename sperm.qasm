@@ -1,11 +1,11 @@
 OPENQASM 2.0;
 include "qelib1.inc";
 //
-qreg milk_owner_ship[2];  // Milk owner_ship state: right_owner(0), thief_owner(1), 
+qreg milk_owner_ship[1];  // Milk owner_ship state: right_owner(0), thief_owner(1), 
 qreg milk_geo_location[2];  // Milk geo_location state: refri(0), not_in_refr(1) .
 qreg sperm_status[2];  // sperm state: in_milk(0), not_in_milk(1) .
 //classical register
-creg measurement_milk_owner_ship[2];
+creg measurement_milk_owner_ship[1];
 creg measurement_geo_location[2];
 creg measurement_sperm_status[2];
 //Initialize all registers
