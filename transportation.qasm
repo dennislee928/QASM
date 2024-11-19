@@ -119,4 +119,13 @@ barrier heading;
 barrier weather;
 barrier transportation;
 
+//measure final status for everything
+measure geo -> geo_status;
+measure emotiona -> emt_status;
+measure speed -> spd_status;
+measure heading -> hd_status;
+measure weather -> wt_status;
+measure transportation -> tpt_status;
+
+
 
