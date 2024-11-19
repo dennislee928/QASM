@@ -27,80 +27,96 @@ reset heading;
 reset weather;
 reset transportation;
 
-// Simulate transportation uncertainty
+// Create initial superpositions
+h geo[0];
+h emotion[0];
+h speed[0];
+h heading[0];
+h weather[0];
 h transportation[0];
-h transportation[1];
-h transportation[2];
-h transportation[3];
-h transportation[4];
-h transportation[5];
 
 // Simulate weather uncertainty
 h weather[0];
 h weather[1];
 
-// Simulate emotion uncertainty
+
+// Initialize getting up from bed process
+// sleeping -> awake -> go to work
+
 h emotion[0];
 h emotion[1];
 h emotion[2];
 h emotion[3];
 h emotion[4];
 h emotion[5];
+x geo[0]; 
 
-// Initialize takeoff sequence
-// Parked -> Taxiing
-x plane[0]; // 001 = Taxiing
 
-// Weather check before takeoff
-measure weather -> wx_status;
+// Entangle geo with emotion
+cx geo[0], emotion[0];
+cx geo[1], emotion[1];
 
-// Abort takeoff if weather is stormy or severe
-// wx_status == 10 or 11 corresponds to stormy/severe
-if (wx_status == 2) x plane[2]; // Set flight to abort state
-if (wx_status == 3) x plane[2]; // Abort on severe weather
+// Entangle emotion with speed
+cx emotion[0], speed[0];
+cx emotion[1], speed[1];
+cx emotion[2], speed[2];
 
-// Proceed to takeoff
-// Begin takeoff roll
-x speed[0];         // Begin increasing speed
-x plane[1];         // Transition to takeoff roll (011)
+// Entangle speed with heading
+cx speed[0], heading[0];
+cx speed[1], heading[1];
+cx speed[2], heading[2];
 
-// Takeoff complete
-x plane[2];         // Set plane state to airborne (111)
+// Entangle heading with weather
+cx heading[0], weather[0];
+cx heading[1], weather[1];
 
-// Simulate altitude uncertainty
-h altitude[0];
-h altitude[1];
+// Entangle weather with transportation
+cx weather[0], transportation[0];
+cx weather[1], transportation[1];
 
-// Climbing to cruising altitude
-x altitude[2];      // Maximum altitude
-x speed[2];         // Cruising speed
+// Create additional entanglements between remaining qubits
+// Emotion to transportation (stress affects transport chaos)
+cx emotion[3], transportation[2];
+cx emotion[4], transportation[3];
+cx emotion[5], transportation[4];
 
-// Simulate heading adjustments
-h heading[0];
+
+// Geo to heading (location affects direction)
+cx geo[0], heading[3];
+
+// Weather to emotion (weather affects mood)
+cx weather[0], emotion[2];
+cx weather[1], emotion[3];
+
+// Transportation to speed (chaos affects speed)
+cx transportation[5], speed[1];
+
+
+// Create superposition for remaining qubits
+h geo[1];
+h emotion[1];
+h emotion[2];
+h emotion[3];
+h emotion[4];
+h emotion[5];
+h speed[1];
+h speed[2];
 h heading[1];
+h heading[2];
+h heading[3];
+h weather[1];
+h transportation[1];
+h transportation[2];
+h transportation[3];
+h transportation[4];
+h transportation[5];
 
-// Flying goblins check during flight
-measure flying_goblins -> goblin_status;
+// Add barrier to ensure entanglement is complete
+barrier geo;
+barrier emotion;
+barrier speed;
+barrier heading;
+barrier weather;
+barrier transportation;
 
-// Conditional gates based on flying goblins detection
-if (goblin_status == 3) reset altitude; // Hostile goblins detected -> emergency descent
-if (goblin_status == 2) x plane[1];     // Friendly goblins -> maintain altitude
-if (goblin_status == 1) x plane[0];     // Seen goblins -> no action, stay cruising
 
-// Prepare for descent
-reset speed[2];
-x altitude[0];      // Reduce altitude
-x plane[1];         // Transition to descent (110)
-
-// Final approach and landing
-reset altitude[1];
-x plane[0];         // Final approach (101)
-
-// Park at gate
-reset plane;
-reset speed;
-measure plane -> plane_status;
-measure altitude -> alt_status;
-measure speed -> spd_status;
-measure heading -> status;     // Save heading data
-measure flying_goblins -> goblin_status; // Record goblin interaction
