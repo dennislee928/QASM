@@ -1,14 +1,10 @@
 OPENQASM 2.0;
 include "qelib1.inc";
 
-// Define qubits for choices and voters
-qreg voters[23];  // Example: using 23 qubits to represent a subset of voters (scaled for simulation purposes)
-creg results[23]; // Classical bits to store the results
+qreg voter_groups[20];   // 20 qubits represent 2^20 (~1,048,576) states. Each state corresponds to ~21.9 voters.
 
-// Initialize voters in superposition (each voter can choose any option give up vote rights.)
-h voters;
+creg results[20];//store qreg
+h voter_groups;  // Superposition for group-based voting choices
+measure voter_groups -> results;
 
-// Apply rotations to encode probabilities of choosing each option
-// Option A: 25% probability, Option B: 30%, Option C: 20%, Abstain: 25%
-u3(pi/4, 0, 0) voters[0];  // Example rotation for the first voter
-u3(pi/3, 0, 0) voters[1];  // Example rotation for the second voter
+
