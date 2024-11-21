@@ -150,5 +150,22 @@ def main():
     print(f"\nTest prediction probabilities: {prediction}")
     print(f"Final parameters: {trained_parameters}")
 
+     # Save the final QASM code
+    final_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
+    try:
+        # Try the new method first
+        qasm_str = final_circuit.qasm_str()
+    except AttributeError:
+        # Fallback for older versions
+        try:
+            qasm_str = final_circuit.qasm()
+        except AttributeError:
+            print("Warning: Could not generate QASM string. This version of Qiskit might not support QASM output.")
+            qasm_str = str(final_circuit)
+    
+    with open('enhanced_trained_neural_network_1.qasm', 'w') as f:
+        f.write(qasm_str)
+    print("\nFinal circuit representation saved to 'trained_neural_network.qasm'")
+
 if __name__ == "__main__":
     main()
