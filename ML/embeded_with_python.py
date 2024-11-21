@@ -1,18 +1,17 @@
 from qiskit import QuantumCircuit
-from qiskit.primitives import StatevectorSampler  # Updated to use StatevectorSampler
-from qiskit.quantum_info import Operator
+from qiskit.primitives import StatevectorSampler
+from qiskit.quantum_info import Operator, Statevector
 from qiskit.circuit import Parameter
 import numpy as np
 import sys
 
 class QASMNeuralNetwork:
     def __init__(self):
-        self.num_qubits = 4  # Number of qubits for the circuit
-        self.num_parameters = 3  # Number of trainable parameters
+        self.num_qubits = 4
+        self.num_parameters = 3
 
     def create_quantum_circuit(self, input_data, parameters):
-        # Create a quantum circuit with 4 qubits
-        qc = QuantumCircuit(self.num_qubits)  # Remove classical bits from initialization
+        qc = QuantumCircuit(self.num_qubits)
         
         # Encode input data using rotation gates
         for i, data in enumerate(input_data):
@@ -26,29 +25,37 @@ class QASMNeuralNetwork:
         # Add entanglement layers
         for i in range(self.num_qubits - 1):
             qc.cx(i, i + 1)
-        qc.cx(self.num_qubits - 1, 0)  # Connect last qubit to first
+        qc.cx(self.num_qubits - 1, 0)
         
         return qc
+
+    def get_statevector(self, circuit):
+        # Get the statevector from the circuit
+        statevector = Statevector.from_instruction(circuit)
+        return statevector
+
+    def calculate_probability(self, statevector, qubit_idx=0):
+        # Calculate the probability of measuring |1⟩ on the specified qubit
+        probabilities = statevector.probabilities([qubit_idx])
+        return probabilities[1]  # Probability of |1⟩
 
     def train_network(self, training_data, labels, epochs=100):
         parameters = np.random.rand(3) * 2 * np.pi
         learning_rate = 0.01
-        
-        # Use StatevectorSampler instead of Sampler
-        sampler = StatevectorSampler()
         
         for epoch in range(epochs):
             total_loss = 0
             for data, label in zip(training_data, labels):
                 # Forward pass
                 circuit = self.create_quantum_circuit(data, parameters)
-                result = sampler.run(circuit, shots=1000).result()
-                counts = result.quasi_dists[0]
+                statevector = self.get_statevector(circuit)
+                output_prob = self.calculate_probability(statevector)
                 
-                output_prob = self.calculate_output_probability(counts)
+                # Calculate loss
                 loss = (output_prob - label) ** 2
                 total_loss += loss
                 
+                # Calculate gradient and update parameters
                 gradient = self.calculate_gradient(data, parameters, label)
                 parameters -= learning_rate * gradient
             
@@ -60,49 +67,46 @@ class QASMNeuralNetwork:
     def calculate_gradient(self, input_data, parameters, label):
         epsilon = 0.01
         gradient = np.zeros_like(parameters)
-        sampler = StatevectorSampler()  # Use StatevectorSampler
         
         for i in range(len(parameters)):
+            # Calculate gradient using finite differences
             parameters_plus = parameters.copy()
-            parameters_plus[i] += epsilon
-            
             parameters_minus = parameters.copy()
+            parameters_plus[i] += epsilon
             parameters_minus[i] -= epsilon
             
+            # Calculate probabilities for plus and minus epsilon
             circuit_plus = self.create_quantum_circuit(input_data, parameters_plus)
-            result_plus = sampler.run(circuit_plus, shots=1000).result()
-            prob_plus = self.calculate_output_probability(result_plus.quasi_dists[0])
+            statevector_plus = self.get_statevector(circuit_plus)
+            prob_plus = self.calculate_probability(statevector_plus)
             
             circuit_minus = self.create_quantum_circuit(input_data, parameters_minus)
-            result_minus = sampler.run(circuit_minus, shots=1000).result()
-            prob_minus = self.calculate_output_probability(result_minus.quasi_dists[0])
+            statevector_minus = self.get_statevector(circuit_minus)
+            prob_minus = self.calculate_probability(statevector_minus)
             
+            # Calculate gradient
             gradient[i] = (prob_plus - prob_minus) / (2 * epsilon)
         
         return gradient
 
-    def calculate_output_probability(self, counts):
-        total_shots = sum(counts.values())
-        ones = sum(counts[k] for k in counts if isinstance(k, int) and k & 1)
-        return ones / total_shots
-
 def main():
+    # Set random seed for reproducibility
+    np.random.seed(42)
+    
     # Create sample data
     num_samples = 10
     training_data = np.random.rand(num_samples, 4) * 2 * np.pi
     labels = np.random.randint(0, 2, num_samples)
     
+    # Create and train the network
     qnn = QASMNeuralNetwork()
     trained_parameters = qnn.train_network(training_data, labels)
     
     # Test the trained network
     test_data = np.random.rand(4) * 2 * np.pi
     test_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
-    
-    sampler = StatevectorSampler()  # Use StatevectorSampler
-    result = sampler.run(test_circuit, shots=1000).result()
-    counts = result.quasi_dists[0]
-    prediction = qnn.calculate_output_probability(counts)
+    test_statevector = qnn.get_statevector(test_circuit)
+    prediction = qnn.calculate_probability(test_statevector)
     
     print(f"\nTest prediction: {prediction}")
     print(f"Final parameters: {trained_parameters}")
