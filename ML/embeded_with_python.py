@@ -84,6 +84,7 @@ class QASMNeuralNetwork:
         return gradient
 
 def main():
+def main():
     # Set random seed for reproducibility
     np.random.seed(42)
     
@@ -92,9 +93,10 @@ def main():
     training_data = np.random.rand(num_samples, 4) * 2 * np.pi
     labels = np.random.randint(0, 2, num_samples)
     
-    # Create and train the network
+    # Create and train the network with 1000 epochs
     qnn = QASMNeuralNetwork()
-    trained_parameters = qnn.train_network(training_data, labels)
+    trained_parameters = qnn.train_network(training_data, labels, epochs=1000)  # Changed to 1000 epochs
+
     
     # Test the trained network
     test_data = np.random.rand(4) * 2 * np.pi
