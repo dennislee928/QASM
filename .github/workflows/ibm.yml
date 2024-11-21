@@ -18,13 +18,14 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Install IBM Quantum SDK
-      run: pip install qiskit
+    - name: Install Qiskit and IBM Quantum SDK
+      run: pip install qiskit qiskit-ibmq-provider
       
     - name: Create Deployment Script
       run: |
         cat <<EOF > deploy_qasm.py
-        from qiskit import QuantumCircuit, transpile, IBMQ
+        from qiskit import QuantumCircuit, transpile
+        from qiskit.providers.ibmq import IBMQ
         import os
 
         # Load IBMQ account using token
