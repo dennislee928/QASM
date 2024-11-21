@@ -34,10 +34,9 @@ jobs:
         pip install --upgrade pip
         pip install qiskit qiskit-ibmq-provider
 
-  Run_script:
-    runs-on: ubuntu-latest
 
-    steps:
+
+
     - name: Create Deployment Script
       run: |
         cat <<EOF > deploy_qasm.py
