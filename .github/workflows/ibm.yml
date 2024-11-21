@@ -35,7 +35,7 @@ jobs:
         backend = provider.get_backend('ibmq_qasm_simulator')  # Replace with your desired backend
 
         # Load your QASM file
-        with open('path/to/your_file.qasm', 'r') as f:
+        with open('./ML/trained_neural_network.qasm', 'r') as f:
             qasm_code = f.read()
 
         # Create a quantum circuit from QASM
