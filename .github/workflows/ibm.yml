@@ -23,7 +23,7 @@ jobs:
 
     - name: Deploy QASM to IBM Quantum
       env:
-        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_QUANTUM_TOKEN }}
+        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
       run: |
         from qiskit import QuantumCircuit, transpile, IBMQ
 
