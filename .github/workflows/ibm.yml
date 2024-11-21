@@ -1,0 +1,77 @@
+name: Deploy QASM to IBM Quantum Lab
+
+on:
+  push:
+    branches:
+      - main  # Adjust to the branch you want to trigger this workflow
+
+jobs:
+  deploy-qasm:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+
+
+  Set-up-Python-virtual-env:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Create Virtual Environment
+      run: python -m venv .venv
+
+
+    - name: Install Qiskit in Virtual Environment
+      run: |
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install qiskit qiskit-ibmq-provider
+
+
+
+
+    - name: Create Deployment Script
+      run: |
+        cat <<EOF > deploy_qasm.py
+        from qiskit import QuantumCircuit, transpile
+        from qiskit.providers.ibmq import IBMQ
+        import os
+
+        # Load IBMQ account using token
+        IBMQ.save_account(os.environ['IBM_QUANTUM_TOKEN'], overwrite=True)
+        provider = IBMQ.load_account()
+
+        # Choose a backend
+        backend = provider.get_backend('ibmq_qasm_simulator')  # Replace with your desired backend
+
+        # Load your QASM file
+        with open('./ML/trained_neural_network.qasm', 'r') as f:
+            qasm_code = f.read()
+
+        # Create a quantum circuit from QASM
+        circuit = QuantumCircuit.from_qasm_str(qasm_code)
+
+        # Compile and run the circuit
+        transpiled = transpile(circuit, backend=backend)
+        job = backend.run(transpiled)
+        print(f"Job {job.job_id()} submitted to {backend.name()}.")
+
+        # Wait for job to complete and fetch results
+        result = job.result()
+        print("Result:", result.get_counts())
+        EOF
+
+
+    - name: Deploy QASM to IBM Quantum
+      env:
+        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
+      run: |
+        source .venv/bin/activate
+        python deploy_qasm.py
