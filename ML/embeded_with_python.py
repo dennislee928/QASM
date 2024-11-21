@@ -83,7 +83,7 @@ class QASMNeuralNetwork:
         
         return gradient
 
-def main():
+
 def main():
     # Set random seed for reproducibility
     np.random.seed(42)
