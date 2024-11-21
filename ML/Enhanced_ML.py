@@ -83,7 +83,7 @@ class QASMNeuralNetwork:
         
         return gradient
 
-    def train_network(self, training_data, labels, epochs=10000, num_classes=3):
+    def train_network(self, training_data, labels, epochs=100000, num_classes=3):
         parameters = np.random.rand(self.num_parameters) * 2 * np.pi
         learning_rate = 0.01
         best_loss = float('inf')
