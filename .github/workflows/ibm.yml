@@ -20,13 +20,11 @@ jobs:
 
     - name: Install IBM Quantum SDK
       run: pip install qiskit
-
-    - name: Deploy QASM to IBM Quantum
-      env:
-        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
+      
+    - name: Create Deployment Script
       run: |
+        cat <<EOF > deploy_qasm.py
         from qiskit import QuantumCircuit, transpile, IBMQ
-
         import os
 
         # Load IBMQ account using token
@@ -37,7 +35,7 @@ jobs:
         backend = provider.get_backend('ibmq_qasm_simulator')  # Replace with your desired backend
 
         # Load your QASM file
-        with open('./ML/trained_neural_network.qasm', 'r') as f:
+        with open('path/to/your_file.qasm', 'r') as f:
             qasm_code = f.read()
 
         # Create a quantum circuit from QASM
@@ -50,4 +48,11 @@ jobs:
 
         # Wait for job to complete and fetch results
         result = job.result()
+        print("Result:", result.get_counts())
+        EOF
+
+    - name: Deploy QASM to IBM Quantum
+      env:
+        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
+      run: python deploy_qasm.py
         print("Result:", result.get_counts())
