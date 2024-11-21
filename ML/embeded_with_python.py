@@ -95,7 +95,7 @@ def main():
     
     # Create and train the network with 1000 epochs
     qnn = QASMNeuralNetwork()
-    trained_parameters = qnn.train_network(training_data, labels, epochs=1000)  # Changed to 1000 epochs
+    trained_parameters = qnn.train_network(training_data, labels, epochs=5000)  # Changed to 1000 epochs
 
     
     # Test the trained network
