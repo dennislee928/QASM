@@ -13,14 +13,31 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+
+
+  Set-up-Python-virtual-env:
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    - name: Install Qiskit and IBM Quantum SDK
-      run: pip install qiskit qiskit-ibmq-provider
-      
+    - name: Create Virtual Environment
+      run: python -m venv .venv
+
+
+    - name: Install Qiskit in Virtual Environment
+      run: |
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install qiskit qiskit-ibmq-provider
+
+  Run_script:
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Create Deployment Script
       run: |
         cat <<EOF > deploy_qasm.py
@@ -52,7 +69,10 @@ jobs:
         print("Result:", result.get_counts())
         EOF
 
+
     - name: Deploy QASM to IBM Quantum
       env:
         IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
-      run: python deploy_qasm.py
+      run: |
+        source .venv/bin/activate
+        python deploy_qasm.py
