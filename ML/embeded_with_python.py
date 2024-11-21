@@ -1,16 +1,16 @@
-from qiskit import QuantumCircuit, Aer
+from qiskit import QuantumCircuit
 from qiskit.primitives import Sampler  # New way to handle execution
 from qiskit.quantum_info import Operator
 from qiskit.circuit import Parameter
 import numpy as np
 import sys
-print("Python executable:", sys.executable)
-print("Python path:", sys.path)
-try:
-    import qiskit
-    print("Qiskit version:", qiskit.__version__)
-except ImportError as e:
-    print("Import error:", e)
+#print("Python executable:", sys.executable)
+#print("Python path:", sys.path)
+#try:
+ #   import qiskit
+  #  print("Qiskit version:", qiskit.__version__)
+#except ImportError as e:#
+#    print("Import error:", e)
 
 
 class QASMNeuralNetwork:
