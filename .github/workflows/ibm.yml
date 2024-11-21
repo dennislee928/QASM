@@ -55,4 +55,3 @@ jobs:
       env:
         IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
       run: python deploy_qasm.py
-        print("Result:", result.get_counts())
