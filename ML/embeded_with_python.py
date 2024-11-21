@@ -1,5 +1,4 @@
 from qiskit import QuantumCircuit
-from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.circuit import Parameter
 import numpy as np
@@ -30,12 +29,10 @@ class QASMNeuralNetwork:
         return qc
 
     def get_statevector(self, circuit):
-        # Get the statevector from the circuit
         statevector = Statevector.from_instruction(circuit)
         return statevector
 
     def calculate_probability(self, statevector, qubit_idx=0):
-        # Calculate the probability of measuring |1⟩ on the specified qubit
         probabilities = statevector.probabilities([qubit_idx])
         return probabilities[1]  # Probability of |1⟩
 
@@ -69,13 +66,11 @@ class QASMNeuralNetwork:
         gradient = np.zeros_like(parameters)
         
         for i in range(len(parameters)):
-            # Calculate gradient using finite differences
             parameters_plus = parameters.copy()
             parameters_minus = parameters.copy()
             parameters_plus[i] += epsilon
             parameters_minus[i] -= epsilon
             
-            # Calculate probabilities for plus and minus epsilon
             circuit_plus = self.create_quantum_circuit(input_data, parameters_plus)
             statevector_plus = self.get_statevector(circuit_plus)
             prob_plus = self.calculate_probability(statevector_plus)
@@ -84,7 +79,6 @@ class QASMNeuralNetwork:
             statevector_minus = self.get_statevector(circuit_minus)
             prob_minus = self.calculate_probability(statevector_minus)
             
-            # Calculate gradient
             gradient[i] = (prob_plus - prob_minus) / (2 * epsilon)
         
         return gradient
@@ -113,9 +107,20 @@ def main():
     
     # Save the final QASM code
     final_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
+    try:
+        # Try the new method first
+        qasm_str = final_circuit.qasm_str()
+    except AttributeError:
+        # Fallback for older versions
+        try:
+            qasm_str = final_circuit.qasm()
+        except AttributeError:
+            print("Warning: Could not generate QASM string. This version of Qiskit might not support QASM output.")
+            qasm_str = str(final_circuit)
+    
     with open('trained_neural_network.qasm', 'w') as f:
-        f.write(final_circuit.qasm())
-    print("\nFinal QASM code saved to 'trained_neural_network.qasm'")
+        f.write(qasm_str)
+    print("\nFinal circuit representation saved to 'trained_neural_network.qasm'")
 
 if __name__ == "__main__":
     main()
