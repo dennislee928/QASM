@@ -1,6 +1,7 @@
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 import numpy as np
+import time
 
 class QASMNeuralNetwork:
     def __init__(self, num_qubits=4, num_classes=3):
@@ -50,14 +51,13 @@ class QASMNeuralNetwork:
         probabilities = []
         for i in range(num_classes):
             prob = statevector.probabilities([i])[1] if i < self.num_qubits else 0
-            probabilities.append(max(prob, 1e-10))  # Avoid log(0) in loss calculation
+            probabilities.append(max(prob, 1e-10))
         return np.array(probabilities)
 
     def calculate_categorical_loss(self, pred_probs, label_vector):
         if len(pred_probs) != len(label_vector):
             raise ValueError(f"Shape mismatch: pred_probs has shape {len(pred_probs)}, but label_vector has shape {len(label_vector)}")
         
-        # Clip probabilities to avoid numerical instability
         pred_probs = np.clip(pred_probs, 1e-10, 1.0)
         return -np.sum(label_vector * np.log(pred_probs))
 
@@ -83,9 +83,12 @@ class QASMNeuralNetwork:
         
         return gradient
 
-    def train_network(self, training_data, labels, epochs=100, num_classes=3):
+    def train_network(self, training_data, labels, epochs=10000, num_classes=3):
         parameters = np.random.rand(self.num_parameters) * 2 * np.pi
         learning_rate = 0.01
+        best_loss = float('inf')
+        best_parameters = None
+        start_time = time.time()
         
         try:
             for epoch in range(epochs):
@@ -96,7 +99,6 @@ class QASMNeuralNetwork:
                     statevector = self.get_statevector(circuit)
                     output_probs = self.calculate_probabilities(statevector, num_classes)
                     
-                    # Ensure probabilities sum to 1
                     output_probs = output_probs / np.sum(output_probs)
                     
                     # Calculate loss
@@ -107,18 +109,31 @@ class QASMNeuralNetwork:
                     gradient = self.calculate_gradient(data, parameters, label)
                     parameters -= learning_rate * gradient
                 
-                if epoch % 10 == 0:
-                    print(f"Epoch {epoch}, Loss: {total_loss/len(training_data)}")
+                avg_loss = total_loss/len(training_data)
+                
+                # Save best parameters
+                if avg_loss < best_loss:
+                    best_loss = avg_loss
+                    best_parameters = parameters.copy()
+                
+                if epoch % 100 == 0:  # Print every 100 epochs
+                    elapsed_time = time.time() - start_time
+                    print(f"Epoch {epoch}/{epochs} ({epoch/epochs*100:.1f}%)")
+                    print(f"Loss: {avg_loss:.6f}")
+                    print(f"Best Loss: {best_loss:.6f}")
+                    print(f"Time elapsed: {elapsed_time:.2f} seconds")
+                    print(f"Estimated time remaining: {(elapsed_time/(epoch+1))*(epochs-epoch-1):.2f} seconds")
+                    print("-" * 50)
                     
         except Exception as e:
             print(f"Error during training: {str(e)}")
             raise
         
-        return parameters
+        return best_parameters
 
 def normalize_and_scale(data):
-    normalized_data = (data - np.min(data)) / (np.max(data) - np.min(data))  # Normalize to [0, 1]
-    scaled_data = normalized_data * (2 * np.pi)  # Scale to [0, 2π]
+    normalized_data = (data - np.min(data)) / (np.max(data) - np.min(data))
+    scaled_data = normalized_data * (2 * np.pi)
     return scaled_data
 
 def main():
@@ -129,43 +144,38 @@ def main():
     num_classes = 3
     input_features = 4
     
-    # Create training data
+    print("Initializing training data...")
     training_data = np.random.rand(num_samples, input_features)
     labels = np.random.randint(0, num_classes, num_samples)
-    one_hot_labels = np.eye(num_classes)[labels]  # Convert to one-hot encoding
+    one_hot_labels = np.eye(num_classes)[labels]
     
-    # Normalize and scale training data
+    print("Normalizing and scaling data...")
     training_data = normalize_and_scale(training_data)
     
-    # Initialize and train network
+    print("\nInitial training data shape:", training_data.shape)
+    print("Initial labels shape:", one_hot_labels.shape)
+    
+    print("\nStarting training...")
     qnn = QASMNeuralNetwork(num_qubits=input_features, num_classes=num_classes)
-    trained_parameters = qnn.train_network(training_data, one_hot_labels, epochs=100, num_classes=num_classes)
+    
+    start_time = time.time()
+    trained_parameters = qnn.train_network(training_data, one_hot_labels, epochs=10000, num_classes=num_classes)
+    total_time = time.time() - start_time
+    
+    print("\nTraining completed!")
+    print(f"Total training time: {total_time:.2f} seconds")
     
     # Test the network
+    print("\nTesting the network...")
     test_data = normalize_and_scale(np.random.rand(input_features))
     test_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
     test_statevector = qnn.get_statevector(test_circuit)
     prediction = qnn.calculate_probabilities(test_statevector, num_classes)
     
-    print(f"\nTest prediction probabilities: {prediction}")
+    print(f"\nTest input: {test_data}")
+    print(f"Prediction probabilities: {prediction}")
+    print(f"Predicted class: {np.argmax(prediction)}")
     print(f"Final parameters: {trained_parameters}")
-
-     # Save the final QASM code
-    final_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
-    try:
-        # Try the new method first
-        qasm_str = final_circuit.qasm_str()
-    except AttributeError:
-        # Fallback for older versions
-        try:
-            qasm_str = final_circuit.qasm()
-        except AttributeError:
-            print("Warning: Could not generate QASM string. This version of Qiskit might not support QASM output.")
-            qasm_str = str(final_circuit)
-    
-    with open('enhanced_trained_neural_network_1.qasm', 'w') as f:
-        f.write(qasm_str)
-    print("\nFinal circuit representation saved to 'trained_neural_network.qasm'")
 
 if __name__ == "__main__":
     main()
