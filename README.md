@@ -1,6 +1,17 @@
 # QASM
 
-For IBM QASM Demo
+## 致謝-廣達晶片設計工程師-胡君毅
+
+## 若非他孜孜不倦，自本人有記錄以來（約2022起）至今（此commit訖），盡其所能於每日台北時區早晨七點整，開啟成人網站，並瀏覽色情影片，便不會啟發我製作本模擬，預測其每天準時觀賞色情影片的雅致。
+
+## 本模擬亦可用於預測其它行為模式，唯參數（如qubit的狀態數以及其解讀跟閥值）需做調整。
+
+## Get to know him:
+[His Instagram](https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Ffirsugcoods%2F&is_from_rle)
+
+
+## For IBM QASM Demo
+### 
 <img src="https://img.shields.io/badge/GIT-black?style=for-the-badge&logo=GIT&logoColor=F05032"/>
 <img src="https://img.shields.io/badge/PYTHON-black?style=for-the-badge&logo=python&logoColor=gold"/>
 <img src="https://img.shields.io/badge/numpy-black?style=for-the-badge&logo=numpy&logoColor=white"/>
