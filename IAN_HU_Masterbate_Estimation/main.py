@@ -107,7 +107,7 @@ def main():
     prediction = qnn.calculate_probability(test_statevector)
     
     print(f"\nCurrent time in Taipei: {get_current_time_in_taipei()}")
-    print(f"Test prediction (task probability): {prediction}")
+    print(f"Test prediction (Ian Hu's on-time masterbation probability): {prediction}")
     print(f"Final parameters: {trained_parameters}")
     
     # Save the final QASM code
@@ -115,7 +115,7 @@ def main():
     try:
         qasm_str = final_circuit.qasm()
     except AttributeError:
-        print("Warning: Could not generate QASM string.")
+        print("Warning: May not generate QASM string.")
         qasm_str = str(final_circuit)
     
     with open('Ian_Hu_Masterbate_On_7A.M_Daily_Schedule_Estimation_Network.qasm', 'w') as f:
