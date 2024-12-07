@@ -6,9 +6,12 @@
 
 ## 本模擬亦可用於預測其它行為模式，唯參數（如qubit的狀態數以及其解讀跟閥值）需做調整。
 
+## Get to know him:
+[His Instagram](https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Ffirsugcoods%2F&is_from_rle)
 
 
-For IBM QASM Demo
+## For IBM QASM Demo
+### 
 <img src="https://img.shields.io/badge/GIT-black?style=for-the-badge&logo=GIT&logoColor=F05032"/>
 <img src="https://img.shields.io/badge/PYTHON-black?style=for-the-badge&logo=python&logoColor=gold"/>
 <img src="https://img.shields.io/badge/numpy-black?style=for-the-badge&logo=numpy&logoColor=white"/>
