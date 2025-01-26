@@ -29,4 +29,22 @@
 - 單次測量通常不足以確定量子位元的狀態組成。
 - 測量會改變量子位元的狀態，使資訊丟失。
 
+# IBM quantum composer-
+https://quantum.ibm.com/composer
+
+# 程式碼視覺化呈現（可實際運算）
+
+![Screenshot 2025-01-26 at 9 42 00 PM](https://github.com/user-attachments/assets/7a7cd37f-1e91-4ed9-90d4-e8fb16a78090)
+
+
+# 執行程式碼
+![Screenshot 2025-01-26 at 9 43 17 PM](https://github.com/user-attachments/assets/3d714702-0547-48ca-851c-902f256cc41a)
+
+# 程式碼執行中
+![Screenshot 2025-01-26 at 9 44 43 PM](https://github.com/user-attachments/assets/5b21e5eb-1399-4373-9b20-c550761dbd82)
+
+# 程式碼執行結果
+![Screenshot 2025-01-26 at 9 46 09 PM](https://github.com/user-attachments/assets/c4a7f40e-96fb-4821-89ad-482826d7091d)
+
+
 - ref: https://brilliant.org/courses/quantum-computing/introduction-108/quantum-bits-2/up-next/
