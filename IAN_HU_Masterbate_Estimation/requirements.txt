@@ -34,3 +34,4 @@ typing-extensions>=4.0.0
 # Documentation
 sphinx>=4.0.0
 sphinx-rtd-theme>=1.0.0
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
