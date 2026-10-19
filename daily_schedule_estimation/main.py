@@ -93,6 +93,7 @@ def main():
     
     # Create sample data: 4 features (date type, mood, physical state, etc.)
     num_samples = 20
+    # Synthetic random data for teaching only; output does not describe any real person.
     training_data = np.random.rand(num_samples, 5) * 2 * np.pi  # Include task-specific input
     labels = np.random.randint(0, 2, num_samples)  # Binary labels for task occurrence
     
@@ -101,13 +102,14 @@ def main():
     trained_parameters = qnn.train_network(training_data, labels, epochs=500)
     
     # Test the trained network
+    # Synthetic random test data for teaching only.
     test_data = np.random.rand(5) * 2 * np.pi
     test_circuit = qnn.create_quantum_circuit(test_data, trained_parameters)
     test_statevector = qnn.get_statevector(test_circuit)
     prediction = qnn.calculate_probability(test_statevector)
     
     print(f"\nCurrent time in Taipei: {get_current_time_in_taipei()}")
-    print(f"Test prediction (Ian Hu's on-time masterbation probability): {prediction}")
+    print(f"Test prediction (on-time event probability): {prediction}")
     print(f"Final parameters: {trained_parameters}")
     
     # Save the final QASM code
@@ -118,9 +120,9 @@ def main():
         print("Warning: May not generate QASM string.")
         qasm_str = str(final_circuit)
     
-    with open('Ian_Hu_Masterbate_On_7A.M_Daily_Schedule_Estimation_Network.qasm', 'w') as f:
+    with open('daily_schedule_network.qasm', 'w') as f:
         f.write(qasm_str)
-    print("\nFinal circuit representation saved to 'task_schedule_network.qasm'")
+    print("\nFinal circuit representation saved to 'daily_schedule_network.qasm'")
 
 if __name__ == "__main__":
     main()
