@@ -1,36 +1,44 @@
 # QASM
 
-## 致謝-廣達晶片設計工程師-胡君毅
+## 專案簡介
+本專案收錄 OpenQASM 2.0 量子電路教學範例與本機模擬練習，主題包含 superposition、entanglement、phase 與 measurement basis 等基本概念。
 
-## 若非他孜孜不倦，自本人有記錄以來（約2022起）至今（此commit訖），盡其所能於每日台北時區早晨七點整，開啟成人網站，並瀏覽色情影片，便不會啟發我製作本模擬，預測其每天準時觀賞色情影片的雅致。
+本模擬以「日常規律事件是否準時發生」為教學情境，示範如何把二元事件編碼為量子電路輸入；情境為虛構，不指涉任何真實人物。
 
-## (2024/12/07)
+## 範例輸出說明
+本範例使用隨機合成資料，輸出僅供教學示範，不代表任何真實人物或行為的機率估計；機率值應介於 [0, 1]。
 
-### 每天準時起床打手槍的機率大約是-0.46647868667764913(10進位，100%->1.0)
-<img width="859" alt="截圖 2024-12-07 下午4 43 02" src="https://github.com/user-attachments/assets/631e3384-17bb-4754-a9d9-fca8ea27c1ad">
-<img width="849" alt="截圖 2024-12-07 下午4 42 38" src="https://github.com/user-attachments/assets/c5df4e07-6fc5-4229-96b1-f5869f87bbb1">
+此為教學 demo，未經校準與驗證，不適用於預測真實個人行為；調整 qubit 狀態數、解讀方式與閾值等參數僅供課堂練習比較。
 
+範例輸出（合成示意）：電路執行後之量測分布，數據為教學範例。
 
+## 範例目錄
 
-## 本模擬亦可用於預測其它行為模式，唯參數（如qubit的狀態數以及其解讀跟閥值）需做調整。
+| 路徑 | 主題 | 說明 |
+|---|---|---|
+| `daily_schedule_estimation/` | 二元事件教學範例 | 以隨機合成資料示範電路建立與本機模擬，輸出不代表真實人物 |
+| `ML/` | Quantum ML 教學範例 | rotation、entanglement 與參數更新的課堂練習 |
+| `daily_life_simulation/` | Superposition 概念 | 以 Hadamard 閘示範疊加態 |
+| `tutorials/` | 量子位元入門 | qubit、superposition 與量測概念說明 |
+| `*.qasm`（根目錄） | OpenQASM 練習 | 各主題的獨立電路範例 |
 
-## Get to know him:
-[His Instagram](https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Ffirsugcoods%2F&is_from_rle)
+## 如何執行（本機模擬）
 
+```bash
+pip install qiskit numpy
+python daily_schedule_estimation/main.py
+```
 
-## For IBM QASM Demo
-### 
-<img src="https://img.shields.io/badge/GIT-black?style=for-the-badge&logo=GIT&logoColor=F05032"/>
+OpenQASM 範例可載入本機 QASM simulator 執行；執行環境與套件版本以各子目錄說明為準。
+
+## 限制與免責
+
+- 本 repo 為教學 demo，未經校準與驗證，不適用於預測真實個人行為。
+- 範例使用隨機合成資料時，輸出僅供教學示範，機率值應介於 [0, 1]。
+- 目前未驗證 IBM Quantum 硬體／Lab 部署；workflow 狀態以最近一次 run 為準。
+
+## 技術
+
 <img src="https://img.shields.io/badge/PYTHON-black?style=for-the-badge&logo=python&logoColor=gold"/>
 <img src="https://img.shields.io/badge/numpy-black?style=for-the-badge&logo=numpy&logoColor=white"/>
-<img src="https://img.shields.io/badge/PYTORCH-black?style=for-the-badge&logo=pytorch&logoColor=EE4C2C"/>
-<img src="https://img.shields.io/badge/c-black?style=for-the-badge&logo=c&logoColor=A8B9CC"/>
-<img src="https://img.shields.io/badge/c++-black?style=for-the-badge&logo=cplusplus&logoColor=00599C"/>
-<img src="https://img.shields.io/badge/TENSORFLOW-black?style=for-the-badge&logo=tensorflow&logoColor=FF6F00"/>
-<img src="https://img.shields.io/badge/GIT-black?style=for-the-badge&logo=GIT&logoColor=F05032"/>
-<img src="https://img.shields.io/badge/PYTHON-black?style=for-the-badge&logo=python&logoColor=gold"/>
-<img src="https://img.shields.io/badge/numpy-black?style=for-the-badge&logo=numpy&logoColor=white"/>
-<img src="https://img.shields.io/badge/PYTORCH-black?style=for-the-badge&logo=pytorch&logoColor=EE4C2C"/>
-<img src="https://img.shields.io/badge/c-black?style=for-the-badge&logo=c&logoColor=A8B9CC"/>
-<img src="https://img.shields.io/badge/c++-black?style=for-the-badge&logo=cplusplus&logoColor=00599C"/>
-<img src="https://img.shields.io/badge/TENSORFLOW-black?style=for-the-badge&logo=tensorflow&logoColor=FF6F00"/>
+<img src="https://img.shields.io/badge/QISKIT-black?style=for-the-badge&logo=qiskit&logoColor=white"/>

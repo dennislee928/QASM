@@ -110,7 +110,7 @@ Results are provided in three categories:
 
 ## License
 
-This project is licensed under the MIT License - no LICENSE file for details.
+授權未定（License: TBD）。使用或散布前請先洽詢 repo 擁有者。
 
 ## Acknowledgments
 

@@ -90,14 +90,14 @@ Uses Hadamard (h) gates to create quantum superposition
 
 Allows quantum registers to exist in multiple states simultaneously
 
-Creates quantum advantage over classical systems
+Demonstrates the concept of superposition with Hadamard gates.
 
 繁體中文
 使用 Hadamard(h)閘來建立量子疊加態
 
 允許量子暫存器同時存在於多個狀態
 
-創造相對於經典系統的量子優勢
+示範以 Hadamard 閘建立 superposition 的概念。
 
 Barriers 量子屏障
 barrier geo;
