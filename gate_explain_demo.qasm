@@ -1,6 +1,6 @@
 OPENQASM 2.0;
 include "qelib1.inc";
-// Simulates 4 person palying black jack, and predict each winning prbabilities of these 4 individuals
+// Teaching demo: phase gates and measurement basis; it does not predict blackjack winning probabilities.
 // 1.Register for 4 players (2 qubits each to represent basic states)
 qreg p1[2];
 qreg p2[2];
