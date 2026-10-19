@@ -68,7 +68,7 @@ The repository includes the following files:
 - The network learns by adjusting the rotation angles (parameters) to minimize the difference between predicted probabilities and actual labels, using quantum operations for computation and classical optimization for parameter updates.
 
 - **`basic_ML.qasm`**: A QASM file defining a basic quantum machine learning circuit.
-- **`trained_neural_network.qasm`**: A teaching example QASM circuit file (file name retained for existing references); its description here does not claim verified training provenance or task performance.
+- **`trained_neural_network.qasm`**: Diagram-only teaching artifact (file name retained for existing references) — an 8-line ASCII circuit diagram, not executable QASM. Do not load it into a simulator.
 - **`readme.md`**: Documentation for the project (this file).
 
 ## Requirements
@@ -90,7 +90,7 @@ To run this project, you need the following:
 ### 1. Running the Quantum Circuits
 
 - Use a QASM simulator or quantum hardware to execute the `.qasm` files.
-- Load the `basic_ML.qasm` or `trained_neural_network.qasm` (teaching example, name retained for existing references) into your quantum environment to simulate the circuits.
+- Load `basic_ML.qasm` into your quantum environment to simulate the circuit. (`trained_neural_network.qasm` is diagram-only / not executable and is not in the loadable list.)
 
 ### 2. Embedding with Python
 
@@ -120,7 +120,7 @@ Defines a simple quantum circuit for basic machine learning tasks. Suitable for 
 
 ### **`trained_neural_network.qasm`**
 
-This is a teaching example circuit presented for studying QASM structure. It is not presented here as a verified trained model or as evidence of task performance.
+This file is diagram-only / not executable: it is an 8-line ASCII diagram of a circuit layout, not an OpenQASM program (it contains no `OPENQASM` declaration or registers), so do not load it into a simulator or hardware. It is kept only as a visual teaching reference (file name retained for existing references) and is not presented as a verified trained model or as evidence of task performance.
 
 ## Future Enhancements
 

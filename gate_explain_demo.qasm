@@ -1,6 +1,6 @@
 OPENQASM 2.0;
 include "qelib1.inc";
-// Teaching demo: phase gates and measurement basis; it does not predict blackjack winning probabilities.
+// Teaching demo: phase gates and measurement basis; it does not predict game outcomes.
 // 1.Register for 4 players (2 qubits each to represent basic states)
 qreg p1[2];
 qreg p2[2];
@@ -28,11 +28,14 @@ cx p1[0],p2[0];
 cx p2[0],p3[0];
 cx p3[0],p4[0];
 
-// Add phase shifts to represent different winning probabilities
-t p1[0]; //t p1[0]: The T gate (also known as π/8 gate),Rotates the qubit state by π/4 (45 degrees) around the Z-axis,Adds a phase of e^(iπ/4),This gives player 1 a specific phase shift that affects their probability distribution
-tdg p2[0];//The T-dagger gate (inverse of T gate),Rotates the qubit state by -π/4 (-45 degrees) around the Z-axis,Adds a phase of e^(-iπ/4),Applied to player 2, giving them a different probability distribution
-s p3[0];//S gate (also known as Phase gate)
-sdg p4[0];//S-dagger gate (also known as Phase gate)
+// Phase gates change relative phase, not computational-basis measurement outcomes on their own.
+// Without a later interference step (for example, additional Hadamard or controlled operations
+// before measurement), a phase gate does not change the probability distribution of
+// computational-basis measurements; the phases below are shown for teaching notation only.
+t p1[0]; // T gate (pi/8 gate): applies a relative phase of e^(i*pi/4) around the Z axis.
+tdg p2[0]; // T-dagger gate: inverse of T, applies a relative phase of e^(-i*pi/4).
+s p3[0]; // S gate (phase gate): applies a relative phase of i.
+sdg p4[0]; // S-dagger gate: inverse of S, applies a relative phase of -i.
 
 // Measure the states
 measure p1 -> c1;
