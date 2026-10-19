@@ -68,7 +68,7 @@ The repository includes the following files:
 - The network learns by adjusting the rotation angles (parameters) to minimize the difference between predicted probabilities and actual labels, using quantum operations for computation and classical optimization for parameter updates.
 
 - **`basic_ML.qasm`**: A QASM file defining a basic quantum machine learning circuit.
-- **`trained_neural_network.qasm`**: Diagram-only teaching artifact (file name retained for existing references) — an 8-line ASCII circuit diagram, not executable QASM. Do not load it into a simulator.
+- **`trained_neural_network.qasm`**: Diagram-only teaching artifact (file name retained for existing references) — an 9-line ASCII circuit diagram, not executable QASM. Do not load it into a simulator.
 - **`readme.md`**: Documentation for the project (this file).
 
 ## Requirements
@@ -120,7 +120,7 @@ Defines a simple quantum circuit for basic machine learning tasks. Suitable for 
 
 ### **`trained_neural_network.qasm`**
 
-This file is diagram-only / not executable: it is an 8-line ASCII diagram of a circuit layout, not an OpenQASM program (it contains no `OPENQASM` declaration or registers), so do not load it into a simulator or hardware. It is kept only as a visual teaching reference (file name retained for existing references) and is not presented as a verified trained model or as evidence of task performance.
+This file is diagram-only / not executable: it is an 9-line ASCII diagram of a circuit layout, not an OpenQASM program (it contains no `OPENQASM` declaration or registers), so do not load it into a simulator or hardware. It is kept only as a visual teaching reference (file name retained for existing references) and is not presented as a verified trained model or as evidence of task performance.
 
 ## Future Enhancements
 
