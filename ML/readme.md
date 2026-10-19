@@ -130,4 +130,4 @@ Represents a more advanced quantum neural network that has been trained to perfo
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+授權未定（License: TBD）。使用或散布前請先洽詢 repo 擁有者。
