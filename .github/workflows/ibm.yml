@@ -1,77 +1,85 @@
-name: Deploy QASM to IBM Quantum Lab
+name: Run QASM on local simulator
 
+# Replaces the retired IBM Quantum cloud path: ibmq_qasm_simulator and
+# IBM Quantum Lab were retired by IBM on 2024-05-15, and
+# qiskit-ibmq-provider / qiskit.providers.ibmq no longer exist in modern
+# Qiskit. This workflow now runs entirely on a local AerSimulator:
+# no IBM token, no secret, and it can run on pull requests / forks.
 on:
   push:
     branches:
-      - main  # Adjust to the branch you want to trigger this workflow
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  deploy-qasm:
-    runs-on: ubuntu-latest
-
+  local-sim:
+    runs-on: ubuntu-24.04
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
 
+      - name: Install Qiskit (pinned)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "qiskit==2.2.3" "qiskit-aer==0.17.2" "qiskit-qasm3-import==0.6.0"
 
-  Set-up-Python-virtual-env:
-    runs-on: ubuntu-latest
+      - name: Run QASM circuits on AerSimulator
+        run: |
+          cat > run_local_sim.py <<'PY'
+          import json
+          from qiskit import transpile
+          from qiskit.qasm2 import load as qasm2_load
+          from qiskit.qasm3 import load as qasm3_load
+          from qiskit_aer import AerSimulator
 
-    steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+          # Circuits exercised by CI. Backend owns this list/assert policy
+          # (plan A1); it is kept explicit here so CI never silently runs
+          # nothing. ML/trained_neural_network.qasm is intentionally NOT
+          # listed: that file is an ASCII circuit drawing, not parseable
+          # OpenQASM, so including it would fail at load time.
+          CIRCUITS = ["ML/basic_ML.qasm"]
+          SHOTS = 1024
+          SEED = 42
 
-    - name: Create Virtual Environment
-      run: python -m venv .venv
+          def load_circuit(path):
+              try:
+                  return qasm3_load(path)
+              except Exception:
+                  return qasm2_load(path)
 
+          backend = AerSimulator(seed_simulator=SEED)
+          all_counts = {}
+          for path in CIRCUITS:
+              circuit = load_circuit(path)
+              assert circuit.num_clbits > 0, f"{path}: no classical bits to measure into"
+              transpiled = transpile(circuit, backend=backend)
+              counts = backend.run(transpiled, shots=SHOTS).result().get_counts()
+              total = sum(counts.values())
+              print(f"{path}: counts={dict(sorted(counts.items()))} total={total}")
+              assert total == SHOTS, f"{path}: counts sum {total} != shots {SHOTS}"
+              assert counts, f"{path}: empty counts"
+              assert all(len(k.replace(' ', '')) == circuit.num_clbits for k in counts), \
+                  f"{path}: count keys are not {circuit.num_clbits}-bit strings"
+              all_counts[path] = dict(sorted(counts.items()))
+          with open("counts.json", "w", encoding="utf-8") as fh:
+              json.dump(all_counts, fh, indent=2, sort_keys=True)
+          print("All local-sim counts assertions passed.")
+          PY
+          python run_local_sim.py
 
-    - name: Install Qiskit in Virtual Environment
-      run: |
-        source .venv/bin/activate
-        pip install --upgrade pip
-        pip install qiskit qiskit-ibmq-provider
-
-
-
-
-    - name: Create Deployment Script
-      run: |
-        cat <<EOF > deploy_qasm.py
-        from qiskit import QuantumCircuit, transpile
-        from qiskit.providers.ibmq import IBMQ
-        import os
-
-        # Load IBMQ account using token
-        IBMQ.save_account(os.environ['IBM_QUANTUM_TOKEN'], overwrite=True)
-        provider = IBMQ.load_account()
-
-        # Choose a backend
-        backend = provider.get_backend('ibmq_qasm_simulator')  # Replace with your desired backend
-
-        # Load your QASM file
-        with open('./ML/trained_neural_network.qasm', 'r') as f:
-            qasm_code = f.read()
-
-        # Create a quantum circuit from QASM
-        circuit = QuantumCircuit.from_qasm_str(qasm_code)
-
-        # Compile and run the circuit
-        transpiled = transpile(circuit, backend=backend)
-        job = backend.run(transpiled)
-        print(f"Job {job.job_id()} submitted to {backend.name()}.")
-
-        # Wait for job to complete and fetch results
-        result = job.result()
-        print("Result:", result.get_counts())
-        EOF
-
-
-    - name: Deploy QASM to IBM Quantum
-      env:
-        IBM_QUANTUM_TOKEN: ${{ secrets.IBM_LAB_API_KEY }}
-      run: |
-        source .venv/bin/activate
-        python deploy_qasm.py
+      - name: Upload counts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qasm-local-sim-counts
+          path: counts.json
+          if-no-files-found: error
