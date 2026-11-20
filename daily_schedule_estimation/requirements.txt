@@ -1,5 +1,5 @@
 # Core quantum computing requirements
-qiskit==0.44.1
+qiskit==1.4.2
 qiskit-aer==0.12.2
 qiskit-terra==0.24.1
 
